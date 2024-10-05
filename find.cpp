@@ -5,8 +5,8 @@
 
 namespace fs = std::filesystem;
 
-std::string context = "that";   // Строка контекста
-int ctxLen = context.length();  // Размер буфера и контекста
+std::string context;   // Строка контекста
+int ctxLen;         // Размер буфера и контекста
 
 float txtFile(std::string pathFile) {   // Получение коэфицента схожести в *.txt
     std::ifstream in;       // поток для чтения
@@ -33,17 +33,21 @@ float txtFile(std::string pathFile) {   // Получение коэфицент
     return 0; // Если не открылся файл
 }
 
-int main() {
-    std::string path = "/home"; // Путь к папке
-    for (const auto& entry : fs::recursive_directory_iterator(path)){ // проходит все файлы рекурсивно
-        std::string extensionFile = {entry.path().extension()}; // расширение файла
-        std::string extensionTxt  = {".txt"};                   // расширение .txt
-        if(extensionFile.compare(extensionTxt)==0) {     // только при расширении .txt
-            std::cout << txtFile(entry.path()) << entry.path() << std::endl;                 //работа с файлом.txt
+int main(int argc, char *argv[]) {
+    if(argc > 2){
+        context = std::string(*(argv+2));
+        ctxLen = context.length();  // Размер буфера и контекста
+        for (const auto& entry : fs::recursive_directory_iterator(*(argv+1))){ // проходит все файлы рекурсивно
+            std::string extensionFile = {entry.path().extension()}; // расширение файла
+            std::string extensionTxt  = {".txt"};                   // расширение .txt
+            if(extensionFile.compare(extensionTxt)==0) {     // только при расширении .txt
+                std::cout << txtFile(entry.path()) << entry.path() << std::endl;                 //работа с файлом.txt
+            }
         }
-        
+        return 0;
     }
-    return 0;
+    std::cout << "Нада 2 аргумента" << std::endl;
+    return 1;
 }
 
 
